@@ -87,4 +87,38 @@ ProjectFile.init({
 	tableName: 'file_project'
 })
 
-module.exports = {SingleFile, ProjectFile}
+/**
+ * ProjectFile附属记录
+ */
+class SubFile extends Model {
+
+}
+
+SubFile.init({
+	id: {
+		type: DataTypes.INTEGER,
+		primaryKey: true,
+		autoIncrement: true
+	},
+	// 父档案id
+	parentId: DataTypes.INTEGER,
+	// 责任者
+	responsible: DataTypes.STRING,
+	// 文件题名
+	title: DataTypes.STRING,
+	// 文件日期
+	date: DataTypes.DATE,
+	// 页号
+	page: DataTypes.INTEGER,
+	// 是否原件
+	original: DataTypes.BOOLEAN
+}, {
+	sequelize: db,
+	tableName: 'file_project_sub'
+})
+
+module.exports = {
+	SingleFile,
+	ProjectFile,
+	SubFile
+}
