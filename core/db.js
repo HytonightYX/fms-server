@@ -27,7 +27,7 @@ const db = new Sequelize(dbName, user, pwd, {
 })
 
 db.sync({
-	force: false
+	force: true
 })
 
 /**

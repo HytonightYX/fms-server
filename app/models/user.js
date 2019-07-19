@@ -1,6 +1,6 @@
 const {db} = require('../../core/db')
-const {Sequelize, Model} = require('sequelize')
-const bcryptjs = require('bcryptjs')
+const {Sequelize, Model, DataTypes} = require('sequelize')
+const bcrypt = require('bcryptjs')
 
 class User extends Model {
 	static async verifyEmailPassword(email, plainPassword) {
@@ -13,7 +13,7 @@ class User extends Model {
 			throw new global.errs.AuthFailed('账号不存在!')
 		}
 
-		const correct = bcryptjs.compareSync(plainPassword, user.password)
+		const correct = bcrypt.compareSync(plainPassword, user.password)
 		if (!correct) {
 			throw new global.errs.AuthFailed('密码不正确!')
 		}
@@ -32,28 +32,27 @@ class User extends Model {
 
 User.init({
 	id: {
-		type: Sequelize.INTEGER,
+		type: DataTypes.INTEGER,
 		primaryKey: true,
 		autoIncrement: true
 	},
-	nickname: Sequelize.STRING(32),
+	nickname: DataTypes.STRING(32),
 	email: {
-		type: Sequelize.STRING, // 最大长度
+		type: DataTypes.STRING, // 最大长度
 		unique: true,               // 唯一
 	},
+	avatar: DataTypes.STRING(32),
 	password: {
-		// 观察者模式
-		type: Sequelize.STRING,
+		type: DataTypes.STRING,
 		set(val) {
-			const salt = bcryptjs.genSaltSync(10) // 10 表示生成盐的成本,越高越安全
-			const hashPassword = bcryptjs.hashSync(val, salt)
+			const salt = bcrypt.genSaltSync(10) // 10 表示生成盐的成本,越高越安全
+			const hashPassword = bcrypt.hashSync(val, salt)
 			this.setDataValue('password', hashPassword) // this 代表User类
 		}
 	},
-	openid: {
-		type: Sequelize.STRING(64), // 最大长度
-		unique: true,               // 唯一
-	}
+	admin: DataTypes.TINYINT,
+	active: DataTypes.TINYINT,
+	groupId: DataTypes.INTEGER,
 }, {
 	sequelize: db,
 	tableName: 'user'
