@@ -17,13 +17,13 @@ const commonAttr = {
 	// 件号
 	itemNum: DataTypes.INTEGER,
 	// 文件字号 如: "##政发[2014]26号"
-	fileNum: DataTypes.STRING,
+	fileCode: DataTypes.STRING,
 	// 责任者
 	responsible: DataTypes.STRING,
 	// 文件题名
 	title: DataTypes.STRING,
 	// 盒号
-	box: DataTypes.INTEGER,
+	boxNum: DataTypes.INTEGER,
 	// 页数
 	page: DataTypes.INTEGER,
 	// 保管期限
