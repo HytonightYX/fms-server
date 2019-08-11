@@ -1,5 +1,5 @@
 const {LinValidator, Rule} = require('../../core/lin-validator-v2')
-const {User} = require('../models/user')
+const {Role} = require('../models/rbac')
 const {LoginType, ArtType} = require('../lib/enum')
 
 class PositiveIntegerValidator extends LinValidator {
@@ -8,6 +8,31 @@ class PositiveIntegerValidator extends LinValidator {
 		this.id = [
 			new Rule('isInt', '需要正整数', {min: 1})
 		]
+	}
+}
+
+class AddRoleValidator extends LinValidator {
+	constructor() {
+		super()
+
+	}
+
+	// 验证该角色是否已经存在
+	async validateRoleExist(vals) {
+		const name = vals.body.name
+		const code = vals.body.code
+
+		const role = await Role.findOne({
+			where: {
+				name,
+				code
+			}
+		})
+
+		// 如果已存在该Email
+		if (role) {
+			throw new Error('该角色已存在,请更换别的角色名或编码!')
+		}
 	}
 }
 
@@ -187,4 +212,6 @@ module.exports = {
 	ClassicValidator,
 	SearchValidator,
 	AddShortCommentValidator,
+
+	AddRoleValidator
 }

@@ -5,4 +5,3 @@ function success(message, errorCode) {
 module.exports = {
 	success
 }
-

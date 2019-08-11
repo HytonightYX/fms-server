@@ -31,6 +31,8 @@ class User extends Model {
 	static async registerByOpenId(openid) {
 		return await User.create({openid: openid})
 	}
+
+
 }
 
 User.init({
@@ -53,7 +55,7 @@ User.init({
 			this.setDataValue('password', hashPassword) // this 代表User类
 		}
 	},
-	admin: DataTypes.TINYINT,
+	// admin: DataTypes.TINYINT,
 	active: DataTypes.TINYINT,
 	roleId: DataTypes.INTEGER,
 }, {
@@ -72,6 +74,7 @@ Role.init({
 		autoIncrement: true
 	},
 	name: DataTypes.STRING,
+	code: DataTypes.STRING,
 	status: {
 		type: DataTypes.BOOLEAN,
 		defaultValue: true

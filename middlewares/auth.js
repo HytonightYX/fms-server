@@ -1,10 +1,10 @@
 const basicAuth = require('basic-auth')
 const jwt = require('jsonwebtoken')
 
+// TODO: 重写为RBAC权限管理逻辑
 class Auth {
 	constructor(level) {
 		this.level = level || 1
-
 		Auth.USER = 8
 		Auth.ADMIN = 16
 		Auth.SUPER_ADMIN = 32

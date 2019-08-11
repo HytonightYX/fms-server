@@ -7,7 +7,7 @@ const db = new Sequelize(dbName, user, pwd, {
 		dialect: 'mysql',     // 数据库类型
 		host: host,
 		port: port,
-		logging: false,        // console中是否显示具体sql
+		logging: false,       // console中是否显示具体sql
 		timezone: '+08:00',   // 设置东八时区,重要
 		define: {
 			timestamps: true,
