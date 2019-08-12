@@ -64,6 +64,39 @@ User.init({
 })
 
 class Role extends Model {
+	static async activate(roleCode) {
+		const role = await Role.findOne({
+			where: {
+				code: roleCode
+			}
+		})
+
+		if (role) {
+			if (role.status === true) {
+				throw new global.errs.ActivateError()
+			}
+			await role.update({status: true})
+		} else {
+			throw new global.errs.NotFound()
+		}
+	}
+
+	static async deactivate(roleCode) {
+		const role = await Role.findOne({
+			where: {
+				code: roleCode
+			}
+		})
+
+		if (role) {
+			if (role.status === false) {
+				throw new global.errs.DeactivateError()
+			}
+			await role.update({status: false})
+		} else {
+			throw new global.errs.NotFound()
+		}
+	}
 
 }
 

@@ -29,9 +29,8 @@ router.post('/add', async ctx => {
 
 /**
  * 删除角色接口
- * 软删除
  */
-router.delete('/delete', async ctx => {
+router.post('/delete', async ctx => {
 	const v = await new DelRoleValidator().validate(ctx)
 	const role = await Role.findOne({
 		where: {
@@ -43,6 +42,26 @@ router.delete('/delete', async ctx => {
 		await role.destroy({force: true})
 		success(`${role.name} 删除成功"`)
 	}
+})
+
+/**
+ * 停用角色接口
+ */
+router.post('/deactivate', async ctx => {
+	const v = await new DelRoleValidator().validate(ctx)
+	const code = v.get('body.code')
+	await Role.deactivate(code)
+	success(`${code} 已停用`)
+})
+
+/**
+ * 启用角色接口
+ */
+router.post('/activate', async ctx => {
+	const v = await new DelRoleValidator().validate(ctx)
+	const code = v.get('body.code')
+	await Role.activate(code)
+	success(`${code} 已启用`)
 })
 
 module.exports = router

@@ -36,6 +36,13 @@ class AddRoleValidator extends LinValidator {
 	}
 }
 
+class DelRoleValidator extends LinValidator {
+	constructor() {
+		super()
+		this.code = []
+	}
+}
+
 class RegisterValidator extends LinValidator {
 	constructor() {
 		super()
@@ -213,5 +220,6 @@ module.exports = {
 	SearchValidator,
 	AddShortCommentValidator,
 
-	AddRoleValidator
+	AddRoleValidator,
+	DelRoleValidator
 }
