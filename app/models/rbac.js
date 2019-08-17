@@ -41,7 +41,7 @@ User.init({
 		primaryKey: true,
 		autoIncrement: true
 	},
-	nickname: DataTypes.STRING(32),
+	userName: DataTypes.STRING(32),
 	email: {
 		type: DataTypes.STRING, // 最大长度
 		unique: true,               // 唯一
@@ -129,6 +129,7 @@ Permission.init({
 	},
 	title: DataTypes.STRING,
 	url: DataTypes.STRING,
+	parentId: DataTypes.INTEGER,
 	status: {
 		type: DataTypes.BOOLEAN,
 		defaultValue: true
