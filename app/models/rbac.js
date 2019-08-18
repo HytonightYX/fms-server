@@ -1,6 +1,7 @@
 /*
 RBAC(基于角色权限控制)模型
  */
+const _ = require('lodash')
 const {db} = require('../../core/db')
 const {Model, DataTypes} = require('sequelize')
 const bcryptjs = require('bcryptjs')
@@ -32,7 +33,14 @@ class User extends Model {
 		return await User.create({openid: openid})
 	}
 
-
+	static async getAllUsers() {
+		const users = await User.findAll()
+		const r = users.map((item, index) => {
+			const _item = _.clone(item.toJSON())
+			return Object.assign(_item, {key: `user-${index}`})
+		})
+		return r
+	}
 }
 
 User.init({
@@ -58,6 +66,7 @@ User.init({
 	// admin: DataTypes.TINYINT,
 	active: DataTypes.TINYINT,
 	roleId: DataTypes.INTEGER,
+	remark: DataTypes.STRING
 }, {
 	sequelize: db,
 	tableName: 'fms_user'
@@ -118,7 +127,9 @@ Role.init({
 })
 
 class Permission extends Model {
+	static getSystemMenuByUserId(id) {
 
+	}
 }
 
 Permission.init({
@@ -140,7 +151,6 @@ Permission.init({
 })
 
 class RolePerm extends Model {
-
 }
 
 RolePerm.init({

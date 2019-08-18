@@ -1,6 +1,5 @@
 const faker = require('faker')
 const _ = require('lodash')
-const moment = require('moment')
 const {SingleFile} = require('../app/models/file')
 const {
 	User,
@@ -62,7 +61,7 @@ const fakeUser = async () => {
 		{
 			userName: 'admin',
 			roleId: 1,
-			remark: '',
+			remark: '超级管理员',
 			valid: true
 		},
 		{
@@ -151,12 +150,12 @@ const fakePerm = async () => {
 			title: '用户管理',
 			url: '/index/auth/user',
 			icon: 'team',
-			parentId: 7
+			parentId: 7,
 		})
 	await Permission.bulkCreate(permList)
 }
 
 // fakeSingleFile()
 // fakeRole()
-// fakeUser()
-fakePerm()
+fakeUser()
+// fakePerm()
