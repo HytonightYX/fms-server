@@ -5,6 +5,7 @@ const _ = require('lodash')
 const {db} = require('../../core/db')
 const {Model, DataTypes} = require('sequelize')
 const bcryptjs = require('bcryptjs')
+const {formatTime} = require('../lib/helper')
 
 class User extends Model {
 	static async verifyEmailPassword(email, plainPassword) {
@@ -34,13 +35,25 @@ class User extends Model {
 	}
 
 	static async getAllUsers() {
-		const users = await User.findAll()
-		const r = users.map((item, index) => {
-			const _item = _.clone(item.toJSON())
-			return Object.assign(_item, {key: `user-${index}`})
+
+		// 复杂查询还是用自定SQL语句吧
+		const users = await db.query(
+			'SELECT user_name as userName, fms_role.name as role, remark, fms_user.updated_at as updatedAt, fms_user.status\n' +
+					'FROM fms_user, fms_role\n' +
+					'WHERE fms_user.role_id = fms_role.id',
+			{ type: db.QueryTypes.SELECT }
+		)
+
+		return users.map((item, index) => {
+			return Object.assign(item, {
+					key: `user-${index}`,
+					time: formatTime(item.updatedAt),
+				}
+			)
 		})
-		return r
 	}
+
+
 }
 
 User.init({
@@ -63,8 +76,10 @@ User.init({
 			this.setDataValue('password', hashPassword) // this 代表User类
 		}
 	},
-	// admin: DataTypes.TINYINT,
-	active: DataTypes.TINYINT,
+	status: {
+		type: DataTypes.TINYINT,
+		defaultValue: true
+	},
 	roleId: DataTypes.INTEGER,
 	remark: DataTypes.STRING
 }, {
@@ -107,6 +122,17 @@ class Role extends Model {
 		}
 	}
 
+	static async getRoleCodeById(id) {
+		const role = await Role.findOne({
+			where: {
+				id
+			}
+		})
+
+		if (role) {
+			return role.getDataValue('code')
+		}
+	}
 }
 
 Role.init({

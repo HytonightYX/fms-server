@@ -27,7 +27,7 @@ const db = new Sequelize(dbName, user, pwd, {
 })
 
 db.sync({
-	force: true
+	force: false
 })
 
 /**
@@ -36,7 +36,7 @@ db.sync({
  */
 Model.prototype.toJSON = function() {
 	let data = clone( this.dataValues)
-	unset(data, 'updatedAt')
+	// unset(data, 'updatedAt')
 	unset(data, 'createdAt')
 	unset(data, 'deletedAt')
 
