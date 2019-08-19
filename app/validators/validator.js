@@ -108,6 +108,18 @@ class TokenValidator extends LinValidator {
 }
 
 /**
+ * 整形id校验器
+ */
+class IntIdValidator extends LinValidator {
+	constructor() {
+		super()
+		this.id = [
+			new Rule('isInt', 'id必须为正整数', {min: 1}),
+		]
+	}
+}
+
+/**
  * 不能为空校验器
  */
 class NotEmptyValidator extends LinValidator {
@@ -221,5 +233,6 @@ module.exports = {
 	AddShortCommentValidator,
 
 	AddRoleValidator,
-	DelRoleValidator
+	DelRoleValidator,
+	IntIdValidator
 }

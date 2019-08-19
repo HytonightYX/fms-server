@@ -38,9 +38,9 @@ class User extends Model {
 
 		// 复杂查询还是用自定SQL语句吧
 		const users = await db.query(
-			'SELECT user_name as userName, fms_role.name as role, remark, fms_user.updated_at as updatedAt, fms_user.status\n' +
+			'SELECT fms_user.id, user_name as userName, fms_role.name as role, remark, fms_user.updated_at as updatedAt, fms_user.status\n' +
 					'FROM fms_user, fms_role\n' +
-					'WHERE fms_user.role_id = fms_role.id',
+					'WHERE fms_user.role_id = fms_role.id and fms_user.deleted_at is null',
 			{ type: db.QueryTypes.SELECT }
 		)
 
