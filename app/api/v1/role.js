@@ -14,6 +14,13 @@ router.get('/test', async ctx => {
 })
 
 /**
+ * 获取所有角色
+ */
+router.get('/', async ctx => {
+	ctx.body = await Role.findAll()
+})
+
+/**
  * 新建角色Role
  */
 router.post('/add', async ctx => {
