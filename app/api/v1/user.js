@@ -17,6 +17,16 @@ router.get('/', async ctx => {
 })
 
 /**
+ * 注册新用户
+ */
+router.post('/register', async ctx => {
+	const user = ctx.request.body
+	console.log(user)
+	await User.create(user)
+	success('注册成功')
+})
+
+/**
  * 删除一个用户
  */
 router.delete('/:id', async ctx => {
@@ -33,6 +43,24 @@ router.delete('/:id', async ctx => {
 	if (r && r.deleted_at) {
 		success()
 	}
+})
+
+/**
+ * 启用用户
+ */
+router.patch('/:id/activate', async ctx => {
+	const v = await new IntIdValidator().validate(ctx)
+	const r = await User.activate(v.get('path.id'))
+	success('已启用')
+})
+
+/**
+ * 停用用户
+ */
+router.patch('/:id/deactivate', async ctx => {
+	const v = await new IntIdValidator().validate(ctx)
+	await User.deactivate(v.get('path.id'))
+	success('已停用')
 })
 
 /**
