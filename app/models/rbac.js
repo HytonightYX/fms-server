@@ -35,7 +35,6 @@ class User extends Model {
 	}
 
 	static async getAllUsers() {
-
 		// 复杂查询还是用自定SQL语句吧
 		const users = await db.query(
 			'SELECT fms_user.id, user_name as userName, fms_role.name as role, remark, fms_user.updated_at as updatedAt, fms_user.status\n' +
@@ -53,7 +52,39 @@ class User extends Model {
 		})
 	}
 
+	static async activate(id) {
+		const user = await User.findOne({
+			where: {
+				id
+			}
+		})
 
+		if (user) {
+			if (user.status === true) {
+				throw new global.errs.ActivateError()
+			}
+			await user.update({status: true})
+		} else {
+			throw new global.errs.NotFound()
+		}
+	}
+
+	static async deactivate(id) {
+		const user = await User.findOne({
+			where: {
+				id
+			}
+		})
+
+		if (user) {
+			if (user.status === false) {
+				throw new global.errs.DeactivateError()
+			}
+			await user.update({status: false})
+		} else {
+			throw new global.errs.NotFound()
+		}
+	}
 }
 
 User.init({
