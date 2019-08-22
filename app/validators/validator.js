@@ -1,5 +1,5 @@
 const {LinValidator, Rule} = require('../../core/lin-validator-v2')
-const {Role} = require('../models/rbac')
+const {Role, User} = require('../models/rbac')
 const {LoginType, ArtType} = require('../lib/enum')
 
 class PositiveIntegerValidator extends LinValidator {
@@ -14,7 +14,6 @@ class PositiveIntegerValidator extends LinValidator {
 class AddRoleValidator extends LinValidator {
 	constructor() {
 		super()
-
 	}
 
 	// 验证该角色是否已经存在
@@ -43,43 +42,34 @@ class DelRoleValidator extends LinValidator {
 	}
 }
 
-class RegisterValidator extends LinValidator {
+class RegisterUserValidator extends LinValidator {
 	constructor() {
 		super()
-		this.email = [
-			new Rule('isEmail', '不符合Email规范')
-		]
-		this.password1 = [
-			new Rule('isLength', '密码长度为6~32字符', {min: 6, max: 32}),
-			new Rule('matches', '密码至少1个大写字母，1个小写字母和1个数字', /^[\w_-]{6,16}$/)
-		]
-		this.password2 = this.password1
-		this.nickname = [
-			new Rule('isLength', '昵称长度为4~32字符', {min: 4, max: 32})
+		this.userName = [
+			new Rule('isLength', '用户名长度', {min: 4, max: 32})
 		]
 	}
 
-	validatePassword(vals) {
-		const pwd1 = vals.body.password1
-		const pwd2 = vals.body.password2
+	// validatePassword(vals) {
+	// 	const pwd1 = vals.body.password1
+	// 	const pwd2 = vals.body.password2
+	//
+	// 	if (pwd1 !== pwd2) {
+	// 		throw new Error('两个密码必须相同')
+	// 	}
+	// }
 
-		if (pwd1 !== pwd2) {
-			throw new Error('两个密码必须相同')
-		}
-	}
-
-	// 验证邮箱是被已被注册
-	async validateEmail(vals) {
-		const email = vals.body.email
+	// 验证用户名
+	async validateUserName(vals) {
+		const userName = vals.body.userName
 		const user = await User.findOne({
-			where: {
-				email: email
-			}
+			where: {userName}
 		})
 
-		// 如果已存在该Email
+		// 如果已存在该用户名
 		if (user) {
-			throw new Error('该Email已被注册!')
+			console.log(user)
+			throw new global.errs.ParameterException('该用户名已被注册!')
 		}
 	}
 }
@@ -224,7 +214,7 @@ function checkArtType(vals) {
 
 module.exports = {
 	PositiveIntegerValidator,
-	RegisterValidator,
+	RegisterValidator: RegisterUserValidator,
 	TokenValidator,
 	NotEmptyValidator,
 	LikeValidator,
@@ -234,5 +224,6 @@ module.exports = {
 
 	AddRoleValidator,
 	DelRoleValidator,
-	IntIdValidator
+	IntIdValidator,
+	RegisterUserValidator
 }

@@ -3,7 +3,7 @@ const Router = require('koa-router')
 const router = new Router({prefix: '/v1/user'})
 const {User} = require('../../models/rbac')
 const {success} = require('../../lib/helper')
-const {IntIdValidator} = require('../../validators/validator')
+const {IntIdValidator, RegisterUserValidator} = require('../../validators/validator')
 
 router.get('/test', async ctx => {
 	ctx.body = {test: 'user router is ok'}
@@ -20,9 +20,8 @@ router.get('/', async ctx => {
  * 注册新用户
  */
 router.post('/register', async ctx => {
-	const user = ctx.request.body
-	console.log(user)
-	await User.create(user)
+	const v = await new RegisterUserValidator().validate(ctx)
+	await User.create(v.get('body'))
 	success('注册成功')
 })
 
@@ -32,16 +31,14 @@ router.post('/register', async ctx => {
 router.delete('/:id', async ctx => {
 	const v = await new IntIdValidator().validate(ctx)
 
-	const user = await User.findOne({
-		where: {
-			id: v.get('path.id')
-		}
-	})
+	const user = await User.findOne(
+		{where: {id: v.get('path.id')}}
+		)
 
 	const r = (await user.destroy()).toJSON()
 
 	if (r && r.deleted_at) {
-		success()
+		success('已删除')
 	}
 })
 

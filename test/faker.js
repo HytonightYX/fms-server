@@ -156,6 +156,6 @@ const fakePerm = async () => {
 }
 
 // fakeSingleFile()
-fakeRole()
-// fakeUser()
+// fakeRole()
+fakeUser()
 // fakePerm()
