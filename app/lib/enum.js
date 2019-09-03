@@ -27,6 +27,16 @@ const ArtType = {
 }
 
 /**
+ * file类型枚举类
+ * @type {{isThisType: isThisType, SINGLE_FILE: number, PROJECT_FILE: number}}
+ */
+const FileType = {
+	SINGLE_FILE: 100,
+	PROJECT_FILE: 200,
+	isThisType
+}
+
+/**
  * 判断val是否属于该类型
  * @param val
  * @returns {boolean}
@@ -41,6 +51,5 @@ function isThisType(val) {
 }
 
 module.exports = {
-	LoginType,
-	ArtType,
+	FileType
 }
