@@ -1,3 +1,6 @@
+const {Lend} = require('./lend')
+const {FileType} = require('../lib/enum')
+
 const {db} = require('../../core/db')
 const {Model, Op, DataTypes} = require('sequelize')
 
@@ -60,6 +63,65 @@ const commonAttr = {
 
 class SingleFile extends Model {
 
+	// static async lendOne(fondsCode, lender) {
+	// 	db.transaction(async t => {
+	// 		// 添加记录
+	// 		await Lend.create({
+	// 			fileType: FileType.SINGLE_FILE,
+	// 			start: new Date(),
+	// 			length: 72,
+	// 			lender: lender
+	// 		}, {
+	// 			transaction: t
+	// 		})
+	//
+	// 		const art = await Art.getData(artId, type, false)
+	//
+	// 		// 对art实体中的favNums字段进行 +1 操作
+	// 		return await art.increment('favNums', {by: 1, transaction: t})
+	// 	})
+	// }
+
+	static async lendAll(ids, lender) {
+		const fileList = []
+
+		if (ids.length > 0) {
+			console.log(ids, lender)
+
+			for (const id of ids) {
+
+				const exist = await Lend.findOne({where: {fileId: id}})
+
+				if (exist) {
+					console.log('err', id)
+					throw new global.errs.LendError()
+				}
+
+				fileList.push({
+					fileId: id,
+					fileType: FileType.SINGLE_FILE,
+					length: 72,
+					lender: lender,
+					start: new Date()
+				})
+			}
+
+			db.transaction(async t => {
+				await Lend.bulkCreate(fileList,
+					{transaction: t}
+					)
+
+				return await SingleFile.update(
+					{lend: true},
+					{
+						where: {id: ids},
+						transaction: t
+					}
+				)
+			})
+
+		}
+	}
 }
 
 SingleFile.init({

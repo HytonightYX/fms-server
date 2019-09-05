@@ -70,6 +70,15 @@ class DeactivateError extends HttpException {
 	}
 }
 
+class LendError extends HttpException {
+	constructor(message, errorCode) {
+		super()
+		this.message = '选择了已借出的档案'
+		this.errorCode = errorCode || 60002
+		this.code = 400
+	}
+}
+
 module.exports = {
 	HttpException,
 	ParameterException,
@@ -79,6 +88,7 @@ module.exports = {
 	Forbidden,
 
 	ActivateError,
-	DeactivateError
+	DeactivateError,
+	LendError
 }
 
