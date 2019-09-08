@@ -1,6 +1,7 @@
 const Router = require('koa-router')
 const router = new Router({prefix: '/v1/lend'})
 const {Lend} = require('../../models/lend')
+const {success} = require('../../lib/helper')
 
 /**
  * lend测试接口
@@ -16,8 +17,17 @@ router.get('/test', (ctx, next) => {
 router.get('/:uid', async ctx => {
 	const uid = ctx.params.uid
 	const lends = await Lend.findAll({where: {lender: uid}})
-	console.log(lends)
 	ctx.body = lends
+})
+
+/**
+ * 归还文件
+ */
+router.post('/return', async ctx => {
+	const ids = ctx.request.body
+	console.log(ids)
+	await Lend.returnAll(ids)
+	success('归还成功')
 })
 
 module.exports = router

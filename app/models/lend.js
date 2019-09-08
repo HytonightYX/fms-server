@@ -1,8 +1,33 @@
 const {db} = require('../../core/db')
 const {Model, Op, DataTypes} = require('sequelize')
 
-class Lend extends Model {
 
+class Lend extends Model {
+	static async returnAll(ids) {
+		const fileList = []
+
+		if (ids.length > 0) {
+			console.log('ids', ids)
+
+			db.transaction(async t => {
+				const r = await Lend.destroy({
+					where: {fileId: ids},
+					transaction: t
+				})
+
+				console.log(r)
+
+				const {SingleFile} = require('./file')
+				return await SingleFile.update(
+					{lend: false},
+					{
+						where: {id: ids},
+						transaction: t
+					}
+				)
+			})
+		}
+	}
 }
 
 Lend.init({
