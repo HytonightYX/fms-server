@@ -15,8 +15,7 @@ router.get('/test', (ctx, next) => {
  * 获取指定用户(uid) lend 的文件
  */
 router.get('/:uid', async ctx => {
-	const uid = ctx.params.uid
-	const lends = await Lend.findAll({where: {lender: uid}})
+	const lends = await Lend.getAll(ctx.params.uid)
 	ctx.body = lends
 })
 

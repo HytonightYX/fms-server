@@ -3,6 +3,34 @@ const {Model, Op, DataTypes} = require('sequelize')
 
 
 class Lend extends Model {
+
+	static async getAll(uid) {
+		const lends = await Lend.findAll({where: {lender: uid}})
+
+		const l = await db.query(`
+					SELECT 
+						lend.id, 
+						lend.file_id as fileId, 
+					  lend.file_type as fileType, 
+					  file_single.title, 
+					  file_single.fonds_code as fondsCode,
+					  lend.length, 
+					  lend.created_at as createdAt
+					FROM 
+						lend,
+						file_single
+					WHERE 
+						lend.file_id = file_single.id 
+						and file_single.deleted_at is null 
+						and lend.deleted_at is null`,
+			{type: db.QueryTypes.SELECT}
+		)
+
+		console.log(l)
+
+		return l
+	}
+
 	static async returnAll(ids) {
 		const fileList = []
 
