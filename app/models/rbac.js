@@ -40,7 +40,7 @@ class User extends Model {
 	static async getAllUsers() {
 		// 复杂查询还是用自定SQL语句吧
 		const users = await db.query(`
-					SELECT fms_user.id, user_name as userName, fms_role.name as role, remark, fms_user.updated_at as updatedAt, fms_user.status
+					SELECT fms_user.id, user_name as userName, fms_role.name as role, fms_user.remark, fms_user.updated_at as updatedAt, fms_user.status
 					FROM fms_user, fms_role
 					WHERE fms_user.role_id = fms_role.id and fms_user.deleted_at is null`,
 			{ type: db.QueryTypes.SELECT }
@@ -180,7 +180,8 @@ Role.init({
 	status: {
 		type: DataTypes.BOOLEAN,
 		defaultValue: true
-	}
+	},
+	remark: DataTypes.STRING
 }, {
 	sequelize: db,
 	tableName: 'fms_role'

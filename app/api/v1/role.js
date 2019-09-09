@@ -2,6 +2,7 @@ const Router = require('koa-router')
 const router = new Router({prefix: '/v1/role'})
 const {AddRoleValidator, DelRoleValidator} = require('../../validators/validator')
 const {success} = require('../../lib/helper')
+const {db} = require('../../../core/db')
 const {
 	User,
 	Role,
@@ -17,7 +18,32 @@ router.get('/test', async ctx => {
  * 获取所有角色
  */
 router.get('/', async ctx => {
-	ctx.body = await Role.findAll()
+	ctx.body = await Role.findAll({
+		attributes: ['id', 'name', 'code', 'status', 'updatedAt', 'remark']
+	})
+})
+
+/**
+ * 根据rid查询用户
+ */
+router.get('/:rid', async ctx => {
+	const rid = ctx.params.rid
+	console.log(rid)
+
+	const isRoleUser = await User.findAll({
+		where: {roleId: rid}
+	})
+
+	const notRoleUser = await db.query(`
+		SELECT *
+		FROM fms_user
+		where role_id != ${rid} or role_id is null
+	`, { type: db.QueryTypes.SELECT })
+
+	ctx.body = {
+		isRoleUser,
+		notRoleUser
+	}
 })
 
 /**
