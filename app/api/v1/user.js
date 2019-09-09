@@ -1,5 +1,5 @@
 const Router = require('koa-router')
-
+const {unset, set} = require('lodash')
 const router = new Router({prefix: '/v1/user'})
 const {User} = require('../../models/rbac')
 const {success} = require('../../lib/helper')
@@ -13,7 +13,9 @@ router.get('/test', async ctx => {
  * 获取所有用户
  */
 router.get('/', async ctx => {
-	ctx.body = await User.getAllUsers()
+	const r = await User.getAllUsers()
+	console.log(r)
+	ctx.body = r
 })
 
 /**
@@ -25,6 +27,11 @@ router.post('/register', async ctx => {
 	success('注册成功')
 })
 
+router.put('/:id/update', async ctx => {
+	const v = await new RegisterUserValidator().validate(ctx)
+	await User.update()
+})
+
 /**
  * 删除一个用户
  */
@@ -33,7 +40,7 @@ router.delete('/:id', async ctx => {
 
 	const user = await User.findOne(
 		{where: {id: v.get('path.id')}}
-		)
+	)
 
 	const r = (await user.destroy()).toJSON()
 
@@ -67,6 +74,20 @@ router.post('/sys-menu', async ctx => {
 	const id = ctx.request.body
 	console.log(id)
 	ctx.body = {ok: 1}
+})
+
+/**
+ * 登录
+ */
+router.post('/login', async ctx => {
+	const {userName, password} = ctx.request.body
+	console.log(ctx.request.body)
+	const user = await User.verifyNamePassword(userName, password)
+	unset(user, 'password')
+	ctx.body = {
+		user,
+		message: '登录成功'
+	}
 })
 
 module.exports = router

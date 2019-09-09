@@ -8,22 +8,25 @@ const bcryptjs = require('bcryptjs')
 const {formatTime} = require('../lib/helper')
 
 class User extends Model {
-	static async verifyEmailPassword(email, plainPassword) {
+	static async verifyNamePassword(userName, plainPassword) {
 		const user = await User.findOne({
-			where: {email: email}
+			where: {userName}
 		})
+
+		console.log(user)
 
 		// 没有对应用户
 		if (!user) {
 			throw new global.errs.AuthFailed('账号不存在!')
 		}
 
-		const correct = bcryptjs.compareSync(plainPassword, user.password)
+		// const correct = await bcryptjs.compareSync(plainPassword, user.password)
+		const correct = plainPassword === user.password
 		if (!correct) {
 			throw new global.errs.AuthFailed('密码不正确!')
 		}
 
-		return user
+		return user.toJSON()
 	}
 
 	static async getUserByOpenId(openid) {
@@ -36,10 +39,10 @@ class User extends Model {
 
 	static async getAllUsers() {
 		// 复杂查询还是用自定SQL语句吧
-		const users = await db.query(
-			'SELECT fms_user.id, user_name as userName, fms_role.name as role, remark, fms_user.updated_at as updatedAt, fms_user.status\n' +
-					'FROM fms_user, fms_role\n' +
-					'WHERE fms_user.role_id = fms_role.id and fms_user.deleted_at is null',
+		const users = await db.query(`
+					SELECT fms_user.id, user_name as userName, fms_role.name as role, remark, fms_user.updated_at as updatedAt, fms_user.status
+					FROM fms_user, fms_role
+					WHERE fms_user.role_id = fms_role.id and fms_user.deleted_at is null`,
 			{ type: db.QueryTypes.SELECT }
 		)
 
